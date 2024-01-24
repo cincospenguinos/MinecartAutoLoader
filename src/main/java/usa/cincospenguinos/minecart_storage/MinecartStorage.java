@@ -10,7 +10,8 @@ public final class MinecartStorage extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new StorageMinecartListener(), this);
+        StorageMinecartListener listener = new StorageMinecartListener(_logger);
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
     @Override
