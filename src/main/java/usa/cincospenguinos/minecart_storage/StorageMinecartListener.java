@@ -1,7 +1,6 @@
 package usa.cincospenguinos.minecart_storage;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
@@ -16,8 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class StorageMinecartListener implements Listener {
-    private Map<Integer, StorageMinecart> _minecartsToTrack = new HashMap<>();
-    private Map<Integer, Set<Chunk>> _chunksPreserved = new HashMap<>();
+    private final Map<Integer, Set<Chunk>> _chunksPreserved = new HashMap<>();
     private BetterLogger _logger;
 
     public StorageMinecartListener() {}
@@ -27,7 +25,7 @@ public class StorageMinecartListener implements Listener {
     }
 
     public boolean isTrackingCart(int id) {
-        return _minecartsToTrack.containsKey(id);
+        return _chunksPreserved.containsKey(id);
     }
 
     @EventHandler
@@ -50,14 +48,17 @@ public class StorageMinecartListener implements Listener {
     }
 
     private boolean vehicleRequiresTracking(Vehicle vehicle) {
-        if (vehicle instanceof StorageMinecart && !_minecartsToTrack.containsKey(vehicle.getEntityId())) {
+        if (!(vehicle instanceof StorageMinecart)) {
+            return false;
+        }
+
+        if (!_chunksPreserved.containsKey(vehicle.getEntityId())) {
             log("Registering " + vehicle.getEntityId());
-            _minecartsToTrack.put(vehicle.getEntityId(), (StorageMinecart) vehicle);
             _chunksPreserved.put(vehicle.getEntityId(), new HashSet<>());
             return true;
         }
 
-        return _minecartsToTrack.containsKey(vehicle.getEntityId());
+        return _chunksPreserved.containsKey(vehicle.getEntityId());
     }
 
     @EventHandler
@@ -65,7 +66,6 @@ public class StorageMinecartListener implements Listener {
         Vehicle vehicle = event.getVehicle();
         if (vehicle instanceof StorageMinecart) {
             log("Removing " + vehicle.getEntityId());
-            _minecartsToTrack.remove(vehicle.getEntityId());
             _chunksPreserved.get(vehicle.getEntityId()).forEach(c -> c.setForceLoaded(false));
             _chunksPreserved.remove(vehicle.getEntityId());
         }
@@ -78,6 +78,10 @@ public class StorageMinecartListener implements Listener {
     }
 
     public void clearRegisteredCarts() {
-        _minecartsToTrack.clear();
+        for (Set<Chunk> chunks : _chunksPreserved.values()) {
+            chunks.forEach(c -> c.setForceLoaded(false));
+        }
+
+        _chunksPreserved.clear();
     }
 }
