@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +19,6 @@ public class StorageMinecartListener implements Listener {
 
     public StorageMinecartListener(BetterLogger logger) {
         _logger = logger;
-
-        _logger.info("Created storage minecart listener!");
     }
 
     public boolean isTrackingCart(int id) {
@@ -28,11 +27,25 @@ public class StorageMinecartListener implements Listener {
 
     @EventHandler
     public void onVehicleCreated(VehicleCreateEvent event) {
-        Vehicle vehicle = event.getVehicle();
+        vehicleRequiresTracking(event.getVehicle());
+    }
+
+    @EventHandler
+    public void onVehicleMoved(VehicleMoveEvent event) {
+        if (vehicleRequiresTracking(event.getVehicle())) {
+            // TODO: Go ahead and set what chunks need to be loaded
+            log(">>> Moving to " + event.getTo().toString());
+        }
+    }
+
+    private boolean vehicleRequiresTracking(Vehicle vehicle) {
         if (vehicle instanceof StorageMinecart) {
             log("Registering " + vehicle.getEntityId());
             _minecartsToTrack.put(vehicle.getEntityId(), (StorageMinecart) vehicle);
+            return true;
         }
+
+        return false;
     }
 
     @EventHandler

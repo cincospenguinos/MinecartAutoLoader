@@ -20,6 +20,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MockEntity implements Entity {
+    private int _entityId;
+
+    public MockEntity(int id) {
+        _entityId = id;
+    }
+
     @Override
     public Location getLocation() {
         return null;
@@ -102,7 +108,7 @@ public class MockEntity implements Entity {
 
     @Override
     public int getEntityId() {
-        return 0;
+        return _entityId;
     }
 
     @Override

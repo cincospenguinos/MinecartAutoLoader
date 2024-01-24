@@ -15,7 +15,5 @@ public final class MinecartStorage extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
-        _logger.info("Goodbye, world!");
-    }
+    public void onDisable() {}
 }

@@ -1,16 +1,13 @@
 package usa.cincospenguinos.minecart_storage.mocks;
 
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Vehicle;
-import org.bukkit.entity.minecart.StorageMinecart;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.loot.LootTable;
+import org.bukkit.entity.Minecart;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
-public class MockStorageMinecart extends MockEntity implements StorageMinecart {
-    public MockStorageMinecart(int entityId) {
-        super(entityId);
+public class MockMinecart extends MockEntity implements Minecart {
+    public MockMinecart(int id) {
+        super(id);
     }
 
     @Override
@@ -90,31 +87,6 @@ public class MockStorageMinecart extends MockEntity implements StorageMinecart {
 
     @Override
     public int getDisplayBlockOffset() {
-        return 0;
-    }
-
-    @Override
-    public Inventory getInventory() {
-        return null;
-    }
-
-    @Override
-    public void setLootTable(LootTable table) {
-
-    }
-
-    @Override
-    public LootTable getLootTable() {
-        return null;
-    }
-
-    @Override
-    public void setSeed(long seed) {
-
-    }
-
-    @Override
-    public long getSeed() {
         return 0;
     }
 }
