@@ -1,0 +1,5 @@
+name: MinecartStorageSystem
+version: '${project.version}'
+main: usa.cincospenguinos.minecart_storage.MinecartStorage
+api-version: 1.20
+description: Adds ability to keep minecarts running forever, never getting unloaded, keeping a cart delivery system running forever
