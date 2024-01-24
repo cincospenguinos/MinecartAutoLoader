@@ -27,10 +27,12 @@ import java.util.function.Predicate;
 public class MockWorld implements World {
     private Chunk _chunkToReturn;
 
-    public MockWorld() {}
+    public MockWorld() {
+        _chunkToReturn = new MockChunk();
+    }
 
-    public void setChunkToReturn(Chunk chunkToReturn) {
-        _chunkToReturn = chunkToReturn;
+    public Chunk getMockChunk() {
+        return _chunkToReturn;
     }
 
     @Override
