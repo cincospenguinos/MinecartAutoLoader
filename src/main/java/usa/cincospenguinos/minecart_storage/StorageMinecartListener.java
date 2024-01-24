@@ -1,5 +1,6 @@
 package usa.cincospenguinos.minecart_storage;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.minecart.StorageMinecart;
@@ -10,10 +11,13 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class StorageMinecartListener implements Listener {
-    private Map<Integer, StorageMinecart> _minecartsToTrack = new HashMap();
+    private Map<Integer, StorageMinecart> _minecartsToTrack = new HashMap<>();
+    private Map<Integer, Set<Chunk>> _chunksPreserved = new HashMap<>();
     private BetterLogger _logger;
 
     public StorageMinecartListener() {}
@@ -33,9 +37,15 @@ public class StorageMinecartListener implements Listener {
 
     @EventHandler
     public void onVehicleMoved(VehicleMoveEvent event) {
-        if (vehicleRequiresTracking(event.getVehicle())) {
-            Location targetLocation = event.getTo();
-            targetLocation.getChunk().setForceLoaded(true);
+        Vehicle cart = event.getVehicle();
+        if (vehicleRequiresTracking(cart)) {
+            Chunk chunk = event.getTo().getChunk();
+            Set<Chunk> chunksRelevantToCart = _chunksPreserved.get(cart.getEntityId());
+
+            if (!chunksRelevantToCart.contains(chunk)) {
+                chunk.setForceLoaded(true);
+                chunksRelevantToCart.add(chunk);
+            }
         }
     }
 
@@ -43,6 +53,7 @@ public class StorageMinecartListener implements Listener {
         if (vehicle instanceof StorageMinecart && !_minecartsToTrack.containsKey(vehicle.getEntityId())) {
             log("Registering " + vehicle.getEntityId());
             _minecartsToTrack.put(vehicle.getEntityId(), (StorageMinecart) vehicle);
+            _chunksPreserved.put(vehicle.getEntityId(), new HashSet<>());
             return true;
         }
 
@@ -55,6 +66,8 @@ public class StorageMinecartListener implements Listener {
         if (vehicle instanceof StorageMinecart) {
             log("Removing " + vehicle.getEntityId());
             _minecartsToTrack.remove(vehicle.getEntityId());
+            _chunksPreserved.get(vehicle.getEntityId()).forEach(c -> c.setForceLoaded(false));
+            _chunksPreserved.remove(vehicle.getEntityId());
         }
     }
 

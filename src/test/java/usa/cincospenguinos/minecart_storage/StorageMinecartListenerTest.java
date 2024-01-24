@@ -63,4 +63,17 @@ public class StorageMinecartListenerTest {
         listener.onVehicleMoved(new VehicleMoveEvent(cart, new Location(mockWorld, 0, 0, 0), new Location(mockWorld, 0, 1, 12)));
         assertTrue(mockWorld.getMockChunk().isForceLoaded());
     }
+
+    @Test
+    public void test_ForceLoadedChunksGetUnloadedUponRemoval() {
+        MockWorld mockWorld = new MockWorld();
+        StorageMinecart cart = new MockStorageMinecart(12);
+        StorageMinecartListener listener = new StorageMinecartListener();
+        listener.onVehicleCreated(new VehicleCreateEvent(cart));
+        listener.onVehicleMoved(new VehicleMoveEvent(cart, new Location(mockWorld, 0, 0, 0), new Location(mockWorld, 0, 1, 12)));
+        assertTrue(mockWorld.getMockChunk().isForceLoaded());
+
+        listener.onVehicleDestroyed(new VehicleDestroyEvent(cart, null));
+        assertFalse(mockWorld.getMockChunk().isForceLoaded());
+    }
 }
