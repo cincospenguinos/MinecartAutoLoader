@@ -1,5 +1,6 @@
 package usa.cincospenguinos.minecart_storage;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
@@ -33,8 +34,9 @@ public class StorageMinecartListener implements Listener {
     @EventHandler
     public void onVehicleMoved(VehicleMoveEvent event) {
         if (vehicleRequiresTracking(event.getVehicle())) {
-            // TODO: Go ahead and set what chunks need to be loaded
-            log(">>> Moving to " + event.getTo().toString());
+            Location targetLocation = event.getTo();
+            targetLocation.getChunk().setForceLoaded(true);
+            log(">>> (" + targetLocation.getBlockX() + ", " + targetLocation.getBlockY() + ", " + targetLocation.getBlockZ() + ")");
         }
     }
 
@@ -61,5 +63,9 @@ public class StorageMinecartListener implements Listener {
         if (_logger != null) {
             _logger.info(msg);
         }
+    }
+
+    public void clearRegisteredCarts() {
+        _minecartsToTrack.clear();
     }
 }

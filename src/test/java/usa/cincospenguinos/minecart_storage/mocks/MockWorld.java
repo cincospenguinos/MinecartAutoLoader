@@ -25,6 +25,34 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class MockWorld implements World {
+    private Chunk _chunkToReturn;
+
+    public MockWorld() {}
+
+    public void setChunkToReturn(Chunk chunkToReturn) {
+        _chunkToReturn = chunkToReturn;
+    }
+
+    @Override
+    public Chunk getChunkAt(int x, int z) {
+        return _chunkToReturn;
+    }
+
+    @Override
+    public Chunk getChunkAt(int x, int z, boolean generate) {
+        return _chunkToReturn;
+    }
+
+    @Override
+    public Chunk getChunkAt(Location location) {
+        return _chunkToReturn;
+    }
+
+    @Override
+    public Chunk getChunkAt(Block block) {
+        return _chunkToReturn;
+    }
+
     @Override
     public Block getBlockAt(int x, int y, int z) {
         return null;
@@ -52,26 +80,6 @@ public class MockWorld implements World {
 
     @Override
     public Block getHighestBlockAt(Location location, HeightMap heightMap) {
-        return null;
-    }
-
-    @Override
-    public Chunk getChunkAt(int x, int z) {
-        return null;
-    }
-
-    @Override
-    public Chunk getChunkAt(int x, int z, boolean generate) {
-        return null;
-    }
-
-    @Override
-    public Chunk getChunkAt(Location location) {
-        return null;
-    }
-
-    @Override
-    public Chunk getChunkAt(Block block) {
         return null;
     }
 
