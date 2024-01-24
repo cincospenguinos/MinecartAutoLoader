@@ -36,18 +36,17 @@ public class StorageMinecartListener implements Listener {
         if (vehicleRequiresTracking(event.getVehicle())) {
             Location targetLocation = event.getTo();
             targetLocation.getChunk().setForceLoaded(true);
-            log(">>> (" + targetLocation.getBlockX() + ", " + targetLocation.getBlockY() + ", " + targetLocation.getBlockZ() + ")");
         }
     }
 
     private boolean vehicleRequiresTracking(Vehicle vehicle) {
-        if (vehicle instanceof StorageMinecart) {
+        if (vehicle instanceof StorageMinecart && !_minecartsToTrack.containsKey(vehicle.getEntityId())) {
             log("Registering " + vehicle.getEntityId());
             _minecartsToTrack.put(vehicle.getEntityId(), (StorageMinecart) vehicle);
             return true;
         }
 
-        return false;
+        return _minecartsToTrack.containsKey(vehicle.getEntityId());
     }
 
     @EventHandler
